@@ -1,11 +1,14 @@
 package com.starikov.getweather;
 
+import android.Manifest;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -35,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
     Handler handler;
 
+    private MyLocation myLocation;
+
+    private static final int REQUEST_CODE_LOCATION_PERMISSION = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         handler = new Handler();
         weatherFont = Typeface.createFromAsset(getAssets(), "weather.ttf");
+        myLocation = new MyLocation(this);
 
         cityField = findViewById(R.id.city_field);
         updatedField = findViewById(R.id.updated_fields);
@@ -53,23 +61,69 @@ public class MainActivity extends AppCompatActivity {
 
         weatherIcon.setTypeface(weatherFont);
 
-        updateWeatherData(new CityPreferences(this).getCity());
+        updateWeatherData(new LastQueryPreferences(this).getLastQuery());
 
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (myLocation.isEnable()) {
+                    try {
+                        Location location = myLocation.getLocation();
+                        String query = "lat=" + location.getLatitude() + "&lon=" + location.getLongitude();
+                        newQuery(query);
+                    } catch (SecurityException exc) {
+                        locationPermissions();
+                    }
+                } else {
+                    warningUnableDetermineLocation();
+                }
+            }
+        });
     }
 
-    private void updateWeatherData(final String city) {
+    private void warningUnableDetermineLocation() {
+        Toast.makeText(this, getString(R.string.unable_determine_location), Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    private void locationPermissions() {
+        Toast.makeText(this, getString(R.string.location_permissions), Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            myLocation.startUpdates();
+        } catch (SecurityException exc) {
+            locationPermissions();
+        }
+
+        // Проверка разрешений
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION},
+                    REQUEST_CODE_LOCATION_PERMISSION);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Перестаем обновлять информацию о местоположении
+        myLocation.stopUpdates();
+    }
+
+    private void updateWeatherData(final String query) {
         final MainActivity activity = this;
         new Thread() {
             public void run() {
-                final JSONObject json = RemoteFetch.getJSON(activity, city);
+                final JSONObject json = RemoteFetch.getJSON(activity, query);
                 if (json != null) {
                     handler.post(new Runnable() {
                         @Override
@@ -153,9 +207,9 @@ public class MainActivity extends AppCompatActivity {
         weatherIcon.setText(icon);
     }
 
-    private void changeCity(String city) {
-        updateWeatherData(city);
-        new CityPreferences(this).setCity(city);
+    private void newQuery(String query) {
+        updateWeatherData(query);
+        new LastQueryPreferences(this).setLastQuery(query);
     }
 
     @Override
@@ -184,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                changeCity(input.getText().toString());
+                newQuery("q=" + input.getText().toString());
             }
         });
         builder.show();

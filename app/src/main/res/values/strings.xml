@@ -15,5 +15,7 @@
     <string name="weather_drizzle">&#xf01c;</string>
 
     <string name="place_not_found">Sorry, no weather data found</string>
+    <string name="unable_determine_location">Unable to determine location, enable gps or internet access and try again</string>
+    <string name="location_permissions">Grant necessary location permissions</string>
     
 </resources>
