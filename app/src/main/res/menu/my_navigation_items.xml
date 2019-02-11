@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_search_history"
+        android:title="@string/menu_search_history"
+        android:icon="@drawable/ic_search_history"/>
+    <item android:id="@+id/action_my_location"
+        android:title="@string/menu_my_location"
+        android:icon="@drawable/ic_my_location"/>
+    <item android:id="@+id/action_search_place"
+        android:title="@string/menu_search_place"
+        android:icon="@drawable/ic_search_place"/>
+</menu>

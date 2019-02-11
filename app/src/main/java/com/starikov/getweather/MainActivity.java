@@ -7,6 +7,9 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.BottomNavigationView.OnNavigationItemSelectedListener;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView detailsField;
     private TextView currentTemperatureField;
     private TextView weatherIcon;
+    private BottomNavigationView bottomNavigation;
 
     Handler handler;
 
@@ -59,28 +63,44 @@ public class MainActivity extends AppCompatActivity {
         currentTemperatureField = findViewById(R.id.current_temperature_field);
         weatherIcon = findViewById(R.id.weather_icon);
 
+        bottomNavigation = findViewById(R.id.bottom_navigation);
+        bottomNavigation.setSelectedItemId(R.id.action_my_location);
+        bottomNavigation.setOnNavigationItemSelectedListener(bottomNavigationListener);
+
         weatherIcon.setTypeface(weatherFont);
 
         updateWeatherData(new LastQueryPreferences(this).getLastQuery());
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (myLocation.isEnable()) {
-                    try {
-                        Location location = myLocation.getLocation();
-                        String query = "lat=" + location.getLatitude() + "&lon=" + location.getLongitude();
-                        newQuery(query);
-                    } catch (SecurityException exc) {
-                        locationPermissions();
-                    }
-                } else {
-                    warningUnableDetermineLocation();
-                }
-            }
-        });
     }
+
+//                if (myLocation.isEnable()) {
+//        try {
+//            Location location = myLocation.getLocation();
+//            String query = "lat=" + location.getLatitude() + "&lon=" + location.getLongitude();
+//            newQuery(query);
+//        } catch (SecurityException exc) {
+//            locationPermissions();
+//        }
+//    } else {
+//        warningUnableDetermineLocation();
+//    }
+
+
+    OnNavigationItemSelectedListener bottomNavigationListener = new OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            int id = menuItem.getItemId();
+            switch (id) {
+                case R.id.action_search_history:
+                    break;
+                case R.id.action_my_location:
+                    break;
+                case R.id.action_search_place:
+                    break;
+            }
+            return true;
+        }
+    };
 
     private void warningUnableDetermineLocation() {
         Toast.makeText(this, getString(R.string.unable_determine_location), Toast.LENGTH_SHORT)

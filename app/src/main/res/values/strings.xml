@@ -17,5 +17,8 @@
     <string name="place_not_found">Sorry, no weather data found</string>
     <string name="unable_determine_location">Unable to determine location, enable gps or internet access and try again</string>
     <string name="location_permissions">Grant necessary location permissions</string>
-    
+
+    <string name="menu_my_location">My Location</string>
+    <string name="menu_search_history">History</string>
+    <string name="menu_search_place">Search place</string>
 </resources>
