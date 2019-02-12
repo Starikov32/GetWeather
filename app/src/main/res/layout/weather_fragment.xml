@@ -35,6 +35,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/colorAccent"
         android:textSize="70sp"/>
 
     <TextView
@@ -43,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/colorAccent"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="40sp" />
 
