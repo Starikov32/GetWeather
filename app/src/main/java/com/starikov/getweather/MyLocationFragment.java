@@ -38,6 +38,8 @@ public class MyLocationFragment extends Fragment {
     private MyLocation myLocation;
     private Activity activity;
 
+    private boolean locationPermissionsGranted;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,18 +48,10 @@ public class MyLocationFragment extends Fragment {
         activity = getActivity();
         handler = new Handler();
         myLocation = new MyLocation(activity);
-        Location location = myLocation.getLocation();
 
-        if (myLocation.isEnable()) {
-            try {
-                String query = "lat=" + location.getLatitude() + "&lon=" + location.getLongitude();
-                newQuery(query);
-            } catch (SecurityException exc) {
-                locationPermissions();
-            }
-        } else {
-            warningUnableDetermineLocation();
-        }
+        locationPermissionsGranted =
+                   ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
 
         Typeface weatherFont = Typeface.createFromAsset(activity.getAssets(), "weather.ttf");
 
@@ -68,28 +62,30 @@ public class MyLocationFragment extends Fragment {
         weatherIcon = view.findViewById(R.id.weather_icon);
         weatherIcon.setTypeface(weatherFont);
 
-        String query = "lat=" + location.getLatitude() + "&lon=" + location.getLongitude();
-
-        updateWeatherData(new LastQueryPreferences(activity).getLastQuery());
-        newQuery(query);
-
         return view;
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
         // Перестаем обновлять информацию о местоположении
         myLocation.stopUpdates();
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         // Проверка разрешений
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (locationPermissionsGranted) {
             myLocation.startUpdates();
+
+            if (myLocation.isEnable()) {
+                Location location = myLocation.getLocation();
+                String query = "lat=" + location.getLatitude() + "&lon=" + location.getLongitude();
+                newQuery(query);
+            } else {
+                warningUnableDetermineLocation();
+            }
         } else {
             locationPermissions();
             ActivityCompat.requestPermissions(activity,

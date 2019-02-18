@@ -7,11 +7,15 @@ import android.support.design.widget.BottomNavigationView.OnNavigationItemSelect
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int PAGER_COUNT = 3;
+    private ViewPager viewPager;
+    private BottomNavigationView bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,40 +24,43 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        bottomNavigation = findViewById(R.id.bottom_navigation);
         bottomNavigation.setSelectedItemId(R.id.action_my_location);
         bottomNavigation.setOnNavigationItemSelectedListener(bottomNavigationListener);
 
-        startMyLocationFragment();
+        viewPager = findViewById(R.id.view_pager);
+        WeatherPagerAdapter pagerAdapter = new WeatherPagerAdapter(getSupportFragmentManager(), PAGER_COUNT);
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(pageChangeListener);
+        viewPager.setCurrentItem(1);
     }
+
+    ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int i, float v, int i1) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            bottomNavigation.setSelectedItemId(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int i) {
+
+        }
+    };
 
     OnNavigationItemSelectedListener bottomNavigationListener = new OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             int id = menuItem.getItemId();
-            switch (id) {
-                case R.id.action_search_history:
-                    break;
-                case R.id.action_my_location:
-                    startMyLocationFragment();
-                    break;
-                case R.id.action_search_place:
-                    break;
-            }
+            viewPager.setCurrentItem(id, true);
             return true;
         }
     };
-
-    private void startMyLocationFragment() {
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-
-        Fragment myLocationFragment = new MyLocationFragment();
-        transaction.replace(R.id.fragment_container, myLocationFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
 
 //    private void showInputDialog() {
 //        AlertDialog.Builder builder = new AlertDialog.Builder(this);
