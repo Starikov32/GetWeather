@@ -27,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
         startMyLocationFragment();
     }
 
-
-
     OnNavigationItemSelectedListener bottomNavigationListener = new OnNavigationItemSelectedListener() {
 
         @Override

@@ -28,8 +28,6 @@ public class MyLocationFragment extends Fragment {
 
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 0;
 
-    private Typeface weatherFont;
-
     private TextView cityField;
     private TextView updatedField;
     private TextView detailsField;
@@ -61,7 +59,7 @@ public class MyLocationFragment extends Fragment {
             warningUnableDetermineLocation();
         }
 
-        weatherFont = Typeface.createFromAsset(activity.getAssets(), "weather.ttf");
+        Typeface weatherFont = Typeface.createFromAsset(activity.getAssets(), "weather.ttf");
 
         cityField = view.findViewById(R.id.city_field);
         updatedField = view.findViewById(R.id.updated_fields);
@@ -88,16 +86,12 @@ public class MyLocationFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        try {
-            myLocation.startUpdates();
-        } catch (SecurityException exc) {
-            locationPermissions();
-        }
-
         // Проверка разрешений
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            myLocation.startUpdates();
         } else {
+            locationPermissions();
             ActivityCompat.requestPermissions(activity,
                     new String[] {Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION},
@@ -161,8 +155,8 @@ public class MyLocationFragment extends Fragment {
             currentTemperatureField.setText(currentTemperature);
 
             DateFormat dateFormat = DateFormat.getDateTimeInstance();
-            String updateOn = dateFormat.format(new Date(json.getLong("dt")*1000));
-            updatedField.setText("Last update: " + updateOn);
+            String updateOn = "Last update: " + dateFormat.format(new Date(json.getLong("dt")*1000));
+            updatedField.setText(updateOn);
 
             setWeatherIcon(detailsJson.getInt("id"),
                     json.getJSONObject("sys").getLong("sunrise") * 1000,
