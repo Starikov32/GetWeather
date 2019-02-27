@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.BottomNavigationView.OnNavigationItemSelectedListener;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         bottomNavigation = findViewById(R.id.bottom_navigation);
-        bottomNavigation.setSelectedItemId(R.id.action_my_location);
+        bottomNavigation.setSelectedItemId(R.id.action_current_weather);
         bottomNavigation.setOnNavigationItemSelectedListener(bottomNavigationListener);
 
         viewPager = findViewById(R.id.view_pager);
@@ -57,23 +54,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             int id = menuItem.getItemId();
-            viewPager.setCurrentItem(id, true);
+            switch (id) {
+                case R.id.action_current_weather:
+                    viewPager.setCurrentItem(0, true);
+                    break;
+                case R.id.action_weather_forecast:
+                    viewPager.setCurrentItem(1, true);
+                    break;
+            }
             return true;
         }
     };
-
-//    private void showInputDialog() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("Change city");
-//        final EditText input = new EditText(this);
-//        input.setInputType(InputType.TYPE_CLASS_TEXT);
-//        builder.setView(input);
-//        builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                newQuery("q=" + input.getText().toString());
-//            }
-//        });
-//        builder.show();
-//    }
 }

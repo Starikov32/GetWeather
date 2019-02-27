@@ -2,7 +2,6 @@
     <string name="app_name">GetWeather</string>
     <string name="action_settings">Settings</string>
 
-    <string name="change_city">Change city</string>
     <string name="open_weather_maps_app_id">a6a757be35ce13d3783ddc02278169ab</string>
 
     <string name="weather_sunny">&#xf00d;</string>
@@ -18,7 +17,9 @@
     <string name="unable_determine_location">Unable to determine location, enable gps or internet access and try again</string>
     <string name="location_permissions">Grant necessary location permissions</string>
 
-    <string name="menu_my_location">My Location</string>
-    <string name="menu_search_history">History</string>
-    <string name="menu_search_place">Search place</string>
+    <string name="menu_current_weather">Current Weather</string>
+    <string name="menu_weather_forecast">Weather forecast</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -24,7 +24,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class MyLocationFragment extends Fragment {
+public class CurrentWeatherFragment extends Fragment {
 
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 0;
 
@@ -107,7 +107,6 @@ public class MyLocationFragment extends Fragment {
 
     private void newQuery(String query) {
         updateWeatherData(query);
-        new LastQueryPreferences(activity).setLastQuery(query);
     }
 
     private void updateWeatherData(final String query) {

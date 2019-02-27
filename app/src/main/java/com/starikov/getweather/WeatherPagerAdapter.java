@@ -9,7 +9,7 @@ public class WeatherPagerAdapter extends FragmentPagerAdapter {
 
     private static final Fragment[] pagers = {
             new Fragment(),
-            new MyLocationFragment(),
+            new CurrentWeatherFragment(),
             new Fragment()
     };
 
