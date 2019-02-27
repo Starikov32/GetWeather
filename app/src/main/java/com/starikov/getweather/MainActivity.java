@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int PAGER_COUNT = 3;
+    private static final int PAGER_COUNT = 2;
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigation;
 
@@ -22,14 +22,12 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         bottomNavigation = findViewById(R.id.bottom_navigation);
-        bottomNavigation.setSelectedItemId(R.id.action_current_weather);
         bottomNavigation.setOnNavigationItemSelectedListener(bottomNavigationListener);
 
         viewPager = findViewById(R.id.view_pager);
         WeatherPagerAdapter pagerAdapter = new WeatherPagerAdapter(getSupportFragmentManager(), PAGER_COUNT);
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(pageChangeListener);
-        viewPager.setCurrentItem(1);
     }
 
     ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {

@@ -8,9 +8,8 @@ public class WeatherPagerAdapter extends FragmentPagerAdapter {
     private int pageCount;
 
     private static final Fragment[] pagers = {
-            new Fragment(),
             new CurrentWeatherFragment(),
-            new Fragment()
+            new WeatherForecastFragment()
     };
 
     public WeatherPagerAdapter(FragmentManager fm, int pageCount) {
