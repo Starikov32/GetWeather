@@ -117,7 +117,8 @@ public class CurrentWeatherFragment extends Fragment {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            renderWeather(json);
+                            CurrentWeather currentWeather = new CurrentWeather(json);
+                            renderWeather(currentWeather);
                         }
                     });
                 } else {
@@ -134,31 +135,25 @@ public class CurrentWeatherFragment extends Fragment {
         }.start();
     }
 
-    private void renderWeather(JSONObject json) {
-        try {
-            String city = json.getString("name").toUpperCase(Locale.US) + ", " + json.getJSONObject("sys").getString("country");
-            cityField.setText(city);
+    private void renderWeather(CurrentWeather currentWeather) {
+        String city = currentWeather.getCity().toUpperCase(Locale.US) + ", " + currentWeather.getCountry();
+        cityField.setText(city);
 
-            JSONObject detailsJson = json.getJSONArray("weather").getJSONObject(0);
-            JSONObject mainJson = json.getJSONObject("main");
-            String details = detailsJson.getString("description").toUpperCase(Locale.US) + "\n"
-                    + "Humidity: " + mainJson.getString("humidity") + "%" + "\n"
-                    + "Pressure: " + mainJson.getString("pressure") + " hPa";
-            detailsField.setText(details);
+        String details = currentWeather.getDescription().toUpperCase(Locale.US) + "\n"
+                + "Humidity: " + currentWeather.getHumidity() + "%" + "\n"
+                + "Pressure: " + currentWeather.getPressure() + " hPa";
+        detailsField.setText(details);
 
-            String currentTemperature = String.format(Locale.getDefault(), "%.2f", mainJson.getDouble("temp")) + " ℃";
-            currentTemperatureField.setText(currentTemperature);
+        String currentTemperature = String.format(Locale.getDefault(), "%.2f", currentWeather.getTemp()) + " ℃";
+        currentTemperatureField.setText(currentTemperature);
 
-            DateFormat dateFormat = DateFormat.getDateTimeInstance();
-            String updateOn = "Last update: " + dateFormat.format(new Date(json.getLong("dt")*1000));
-            updatedField.setText(updateOn);
+        DateFormat dateFormat = DateFormat.getDateTimeInstance();
+        String updateOn = "Last update: " + dateFormat.format(new Date(currentWeather.getForecastTime() * 1000));
+        updatedField.setText(updateOn);
 
-            setWeatherIcon(detailsJson.getInt("id"),
-                    json.getJSONObject("sys").getLong("sunrise") * 1000,
-                    json.getJSONObject("sys").getLong("sunset") * 1000);
-        } catch (Exception exc) {
-            Log.e("SimpleWeather", "One or more fields not found in the JSON data");
-        }
+        setWeatherIcon(currentWeather.getConditionId(),
+                currentWeather.getSunrise() * 1000,
+                currentWeather.getSunset() * 1000);
     }
 
     private void setWeatherIcon(int actualId, long sunrise, long sunset) {
