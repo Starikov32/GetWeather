@@ -11,12 +11,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.starikov.getweather.weatherdata.CurrentWeather;
 
 import org.json.JSONObject;
 
@@ -66,10 +67,36 @@ public class CurrentWeatherFragment extends Fragment {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+         switch (requestCode) {
+             case REQUEST_CODE_LOCATION_PERMISSION:
+                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                     myLocation.startUpdates();
+                     requestWeather();
+                     locationPermissionsGranted = true;
+                 }
+                 break;
+         }
+    }
+
+    private void requestWeather() {
+        if (myLocation.isEnable()) {
+            newQuery(getQueryByLocation());
+        } else {
+            warningUnableDetermineLocation();
+        }
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         // Перестаем обновлять информацию о местоположении
         myLocation.stopUpdates();
+    }
+
+    private String getQueryByLocation() {
+        Location location = myLocation.getLocation();
+        return "lat=" + location.getLatitude() + "&lon=" + location.getLongitude();
     }
 
     @Override
@@ -78,14 +105,7 @@ public class CurrentWeatherFragment extends Fragment {
         // Проверка разрешений
         if (locationPermissionsGranted) {
             myLocation.startUpdates();
-
-            if (myLocation.isEnable()) {
-                Location location = myLocation.getLocation();
-                String query = "lat=" + location.getLatitude() + "&lon=" + location.getLongitude();
-                newQuery(query);
-            } else {
-                warningUnableDetermineLocation();
-            }
+            requestWeather();
         } else {
             locationPermissions();
             ActivityCompat.requestPermissions(activity,

@@ -1,4 +1,4 @@
-package com.starikov.getweather;
+package com.starikov.getweather.weatherdata;
 
 import java.util.ArrayList;
 

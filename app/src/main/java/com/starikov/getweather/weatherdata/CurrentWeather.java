@@ -1,4 +1,4 @@
-package com.starikov.getweather;
+package com.starikov.getweather.weatherdata;
 
 import android.util.Log;
 
@@ -13,9 +13,9 @@ public class CurrentWeather {
     private String city;
 
     // additional
-    private long sunrise;
-    private long sunset;
-    private long forecastTime;
+    private int sunrise;
+    private int sunset;
+    private int forecastTime;
     private int cloudiness;
 
     // weather
@@ -40,7 +40,7 @@ public class CurrentWeather {
             longitude = (double) coordinates.get("lon");
             latitude = (double) coordinates.get("lat");
 
-            JSONObject weather = jsonObject.getJSONObject("weather");
+            JSONObject weather = jsonObject.getJSONArray("weather").getJSONObject(0);
             conditionId = (int) weather.get("id");
             parameters = (String) weather.get("main");
             description = (String) weather.get("description");
@@ -61,10 +61,10 @@ public class CurrentWeather {
 
             JSONObject sys = jsonObject.getJSONObject("sys");
             country = (String) sys.get("country");
-            sunrise = (long) sys.get("sunrise");
-            sunset = (long) sys.get("sunset");
+            sunrise = (int) sys.get("sunrise");
+            sunset = (int) sys.get("sunset");
 
-            forecastTime = (long) jsonObject.get("dt");
+            forecastTime = (int) jsonObject.get("dt");
             city = (String) jsonObject.get("name");
         } catch (JSONException exc) {
             Log.e("JSON", "One or more fields not found in the JSON data");
