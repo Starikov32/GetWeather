@@ -38,7 +38,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onPageSelected(int position) {
-            bottomNavigation.setSelectedItemId(position);
+            switch (position) {
+                case 0:
+                    bottomNavigation.setSelectedItemId(R.id.action_current_weather);
+                    break;
+                case 1:
+                    bottomNavigation.setSelectedItemId(R.id.action_weather_forecast);
+                    break;
+            }
         }
 
         @Override

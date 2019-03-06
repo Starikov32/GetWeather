@@ -108,9 +108,8 @@ public class CurrentWeatherFragment extends Fragment {
             requestWeather();
         } else {
             locationPermissions();
-            ActivityCompat.requestPermissions(activity,
-                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION},
+            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION},
                     REQUEST_CODE_LOCATION_PERMISSION);
         }
     }
