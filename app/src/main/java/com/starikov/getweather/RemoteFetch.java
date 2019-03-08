@@ -2,32 +2,33 @@ package com.starikov.getweather;
 
 import android.content.Context;
 
-import org.json.JSONObject;
+import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.json.JSONObject;
 
 public class RemoteFetch {
     private static final String OPEN_WEATHER_MAP_API =
-            "http://api.openweathermap.org/data/2.5/weather?%s&units=metric";
+            "http://api.openweathermap.org/data/2.5/weather?";
 
-    public static JSONObject getJSON(Context context, String query) {
+    public static JSONObject getJSON(final Context context, String query) {
         try {
-            URL url = new URL(String.format(OPEN_WEATHER_MAP_API, query));
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.addRequestProperty("x-api-key", context.getString(R.string.open_weather_maps_app_id));
+            OkHttpClient client = new OkHttpClient();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuffer json = new StringBuffer(1024);
-            String temp = "";
-            while ((temp = reader.readLine()) != null) {
-                json.append(temp).append("\n");
-            }
-            reader.close();
+            // TODO: тут нужно сделать query чтобы не напрямую вставлялся а методами
+            HttpUrl.Builder urlBuilder = HttpUrl.parse(OPEN_WEATHER_MAP_API + query).newBuilder();
+            urlBuilder.addQueryParameter("units", "metric");
+            urlBuilder.addQueryParameter("APPID", context.getString(R.string.open_weather_maps_app_id));
 
-            JSONObject data = new JSONObject(json.toString());
+            String url = urlBuilder.build().toString();
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+
+            Response response = client.newCall(request).execute();
+            JSONObject data = new JSONObject(response.body().string());
 
             // This value will be 404 if the request was not
             // successful; 200 = success
@@ -37,6 +38,7 @@ public class RemoteFetch {
 
             return data;
         } catch (Exception exc) {
+            exc.printStackTrace();
             return null;
         }
     }
