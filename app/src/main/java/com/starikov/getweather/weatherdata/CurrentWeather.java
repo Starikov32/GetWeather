@@ -29,7 +29,7 @@ public class CurrentWeather {
 
     // main
     private double temp;
-    private double pressure;
+    private int pressure;
     private int humidity;
     private double maxTemp;
     private double minTemp;
@@ -47,7 +47,7 @@ public class CurrentWeather {
 
             JSONObject main = jsonObject.getJSONObject("main");
             temp = (double) main.get("temp");
-            pressure = (double) main.get("pressure");
+            pressure = (int) main.get("pressure");
             humidity = (int) main.get("humidity");
             minTemp = (double) main.get("temp_min");
             maxTemp = (double) main.get("temp_max");
