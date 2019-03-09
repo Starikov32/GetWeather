@@ -25,7 +25,7 @@ public class CurrentWeather {
 
     // wind
     private double windSpeed;
-    private double windDirection;
+    private int windDirection;
 
     // main
     private double temp;
@@ -54,7 +54,7 @@ public class CurrentWeather {
 
             JSONObject wind = jsonObject.getJSONObject("wind");
             windSpeed = (double) wind.get("speed");
-            windDirection = (double) wind.get("deg");
+            windDirection = (int) wind.get("deg");
 
             JSONObject clouds = jsonObject.getJSONObject("clouds");
             cloudiness = (int) clouds.get("all");
