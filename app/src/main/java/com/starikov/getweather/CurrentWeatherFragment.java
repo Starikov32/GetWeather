@@ -147,7 +147,7 @@ public class CurrentWeatherFragment extends Fragment {
     private void updateWeatherData(final double lat, final double lon) {
         new Thread() {
             public void run() {
-                final JSONObject json = RemoteFetch.getJSON(activity, lat, lon);
+                final JSONObject json = RemoteFetch.getCurrentWeatherJSON(activity, lat, lon);
                 if (json != null) {
                     handler.post(new Runnable() {
                         @Override
