@@ -87,6 +87,16 @@ public class CurrentWeatherFragment extends Fragment {
         }
     }
 
+    private void requestWeatherOffline() {
+        WeatherPreferences preferences = new WeatherPreferences(activity);
+        CurrentWeather currentWeather = preferences.getCurrentWeather();
+        if (currentWeather != null) {
+            renderWeather(currentWeather);
+        } else {
+            warningNoSavedWeather();
+        }
+    }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -105,7 +115,11 @@ public class CurrentWeatherFragment extends Fragment {
         // Проверка разрешений
         if (locationPermissionsGranted) {
             myLocation.startUpdates();
-            requestWeather();
+            if (((MainActivity) activity).isNetworkAvailable()) {
+                requestWeather();
+            } else {
+                requestWeatherOffline();
+            }
         } else {
             locationPermissions();
             requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION,
@@ -116,6 +130,11 @@ public class CurrentWeatherFragment extends Fragment {
 
     private void warningUnableDetermineLocation() {
         Toast.makeText(activity, getString(R.string.unable_determine_location), Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    private void warningNoSavedWeather() {
+        Toast.makeText(activity, getString(R.string.no_saved_weather), Toast.LENGTH_SHORT)
                 .show();
     }
 
@@ -137,6 +156,8 @@ public class CurrentWeatherFragment extends Fragment {
                         @Override
                         public void run() {
                             CurrentWeather currentWeather = new CurrentWeather(json);
+                            WeatherPreferences preferences = new WeatherPreferences(activity);
+                            preferences.setCurrentWeather(currentWeather);
                             renderWeather(currentWeather);
                         }
                     });

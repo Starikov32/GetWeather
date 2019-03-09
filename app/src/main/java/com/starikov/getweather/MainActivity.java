@@ -1,5 +1,8 @@
 package com.starikov.getweather;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -53,6 +56,13 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager manager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
 
     OnNavigationItemSelectedListener bottomNavigationListener = new OnNavigationItemSelectedListener() {
 
