@@ -72,16 +72,17 @@ public class CurrentWeatherFragment extends Fragment {
              case REQUEST_CODE_LOCATION_PERMISSION:
                  if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                      myLocation.startUpdates();
-                     requestWeather();
+                     requestWeatherOnline();
                      locationPermissionsGranted = true;
                  }
                  break;
          }
     }
 
-    private void requestWeather() {
+    private void requestWeatherOnline() {
         if (myLocation.isEnable()) {
-            newQuery(getQueryByLocation());
+            Location location = myLocation.getLocation();
+            updateWeatherData(location.getLatitude(), location.getLongitude());
         } else {
             warningUnableDetermineLocation();
         }
@@ -104,11 +105,6 @@ public class CurrentWeatherFragment extends Fragment {
         myLocation.stopUpdates();
     }
 
-    private String getQueryByLocation() {
-        Location location = myLocation.getLocation();
-        return "lat=" + location.getLatitude() + "&lon=" + location.getLongitude();
-    }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -116,12 +112,12 @@ public class CurrentWeatherFragment extends Fragment {
         if (locationPermissionsGranted) {
             myLocation.startUpdates();
             if (((MainActivity) activity).isNetworkAvailable()) {
-                requestWeather();
+                requestWeatherOnline();
             } else {
                 requestWeatherOffline();
             }
         } else {
-            locationPermissions();
+            warningGrantNecessaryLocationPermissions();
             requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION},
                     REQUEST_CODE_LOCATION_PERMISSION);
@@ -138,19 +134,20 @@ public class CurrentWeatherFragment extends Fragment {
                 .show();
     }
 
-    private void locationPermissions() {
+    private void warningGrantNecessaryLocationPermissions() {
         Toast.makeText(activity, getString(R.string.location_permissions), Toast.LENGTH_SHORT)
                 .show();
     }
 
-    private void newQuery(String query) {
-        updateWeatherData(query);
+    private void warningPlaceNotFound() {
+        Toast.makeText(activity, getString(R.string.place_not_found), Toast.LENGTH_SHORT)
+                .show();
     }
 
-    private void updateWeatherData(final String query) {
+    private void updateWeatherData(final double lat, final double lon) {
         new Thread() {
             public void run() {
-                final JSONObject json = RemoteFetch.getJSON(activity, query);
+                final JSONObject json = RemoteFetch.getJSON(activity, lat, lon);
                 if (json != null) {
                     handler.post(new Runnable() {
                         @Override
@@ -162,14 +159,7 @@ public class CurrentWeatherFragment extends Fragment {
                         }
                     });
                 } else {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(activity,
-                                    getString(R.string.place_not_found),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    warningPlaceNotFound();
                 }
             }
         }.start();

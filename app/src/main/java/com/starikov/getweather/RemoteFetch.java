@@ -13,12 +13,13 @@ public class RemoteFetch {
     private static final String OPEN_WEATHER_MAP_API =
             "http://api.openweathermap.org/data/2.5/weather?";
 
-    public static JSONObject getJSON(final Context context, String query) {
+    public static JSONObject getJSON(final Context context, double lat, double lon) {
         try {
             OkHttpClient client = new OkHttpClient();
 
-            // TODO: тут нужно сделать query чтобы не напрямую вставлялся а методами
-            HttpUrl.Builder urlBuilder = HttpUrl.parse(OPEN_WEATHER_MAP_API + query).newBuilder();
+            HttpUrl.Builder urlBuilder = HttpUrl.parse(OPEN_WEATHER_MAP_API).newBuilder();
+            urlBuilder.addQueryParameter("lat", String.valueOf(lat));
+            urlBuilder.addQueryParameter("lon", String.valueOf(lon));
             urlBuilder.addQueryParameter("units", "metric");
             urlBuilder.addQueryParameter("APPID", context.getString(R.string.open_weather_maps_app_id));
 

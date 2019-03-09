@@ -57,13 +57,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public boolean isNetworkAvailable() {
-        ConnectivityManager manager =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
     OnNavigationItemSelectedListener bottomNavigationListener = new OnNavigationItemSelectedListener() {
 
         @Override
@@ -80,4 +73,11 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     };
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager manager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
 }
