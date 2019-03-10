@@ -8,18 +8,24 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.starikov.getweather.adapters.WeatherPagerAdapter;
+
+import java.util.Arrays;
+
 public class MainActivity extends AppCompatActivity {
-    private static final int PAGER_COUNT = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ViewPager viewPager = findViewById(R.id.view_pager);
-        WeatherPagerAdapter pagerAdapter = new WeatherPagerAdapter(getSupportFragmentManager(), PAGER_COUNT);
+        WeatherPagerAdapter pagerAdapter = new WeatherPagerAdapter(
+                Arrays.asList(new CurrentWeatherFragment(), new WeatherForecastFragment()),
+                getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
     }
 
