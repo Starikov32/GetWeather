@@ -14,7 +14,7 @@ public class MyLocation implements LocationListener {
     private Context context;
     private Location lastLocation;
 
-    MyLocation(Context context) {
+    public MyLocation(Context context) {
         this.context = context;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }

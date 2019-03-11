@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
-import com.starikov.getweather.weatherdata.CurrentWeather;
+import com.starikov.getweather.model.CurrentWeather;
 import com.starikov.getweather.weatherdata.WeatherForecast5Days;
 
 public class WeatherPreferences {

@@ -1,4 +1,4 @@
-package com.starikov.getweather;
+package com.starikov.getweather.main.current_weather;
 
 import android.Manifest;
 import android.app.Activity;
@@ -17,9 +17,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.starikov.getweather.weatherdata.CurrentWeather;
-
-import org.json.JSONObject;
+import com.starikov.getweather.MyLocation;
+import com.starikov.getweather.R;
+import com.starikov.getweather.RemoteFetch;
+import com.starikov.getweather.WeatherPreferences;
+import com.starikov.getweather.main.MainActivity;
+import com.starikov.getweather.model.CurrentWeather;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -30,9 +33,13 @@ public class CurrentWeatherFragment extends Fragment {
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 0;
 
     private TextView cityField;
+
     private TextView updatedField;
+
     private TextView detailsField;
+
     private TextView currentTemperatureField;
+
     private TextView weatherIcon;
 
     private Handler handler;
@@ -51,8 +58,8 @@ public class CurrentWeatherFragment extends Fragment {
         myLocation = new MyLocation(activity);
 
         locationPermissionsGranted =
-                   ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+                ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
 
         Typeface weatherFont = Typeface.createFromAsset(activity.getAssets(), "weather.ttf");
 
@@ -68,15 +75,15 @@ public class CurrentWeatherFragment extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-         switch (requestCode) {
-             case REQUEST_CODE_LOCATION_PERMISSION:
-                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                     myLocation.startUpdates();
-                     requestWeatherOnline();
-                     locationPermissionsGranted = true;
-                 }
-                 break;
-         }
+        switch (requestCode) {
+            case REQUEST_CODE_LOCATION_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    myLocation.startUpdates();
+                    requestWeatherOnline();
+                    locationPermissionsGranted = true;
+                }
+                break;
+        }
     }
 
     private void requestWeatherOnline() {
@@ -100,9 +107,9 @@ public class CurrentWeatherFragment extends Fragment {
 
     @Override
     public void onStop() {
-        super.onStop();
         // Перестаем обновлять информацию о местоположении
         myLocation.stopUpdates();
+        super.onStop();
     }
 
     @Override
@@ -118,8 +125,8 @@ public class CurrentWeatherFragment extends Fragment {
             }
         } else {
             warningGrantNecessaryLocationPermissions();
-            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION},
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION},
                     REQUEST_CODE_LOCATION_PERMISSION);
         }
     }
@@ -147,12 +154,11 @@ public class CurrentWeatherFragment extends Fragment {
     private void updateWeatherData(final double lat, final double lon) {
         new Thread() {
             public void run() {
-                final JSONObject json = RemoteFetch.getCurrentWeatherJSON(activity, lat, lon);
-                if (json != null) {
+                final CurrentWeather currentWeather = RemoteFetch.getCurrentWeather(activity, lat, lon);
+                if (currentWeather != null) {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            CurrentWeather currentWeather = new CurrentWeather(json);
                             WeatherPreferences preferences = new WeatherPreferences(activity);
                             preferences.setCurrentWeather(currentWeather);
                             renderWeather(currentWeather);
@@ -166,24 +172,24 @@ public class CurrentWeatherFragment extends Fragment {
     }
 
     private void renderWeather(CurrentWeather currentWeather) {
-        String city = currentWeather.getCity().toUpperCase(Locale.US) + ", " + currentWeather.getCountry();
+        String city = currentWeather.getName().toUpperCase(Locale.US) + ", " + currentWeather.getSys().getCountry();
         cityField.setText(city);
 
-        String details = currentWeather.getDescription().toUpperCase(Locale.US) + "\n"
-                + "Humidity: " + currentWeather.getHumidity() + "%" + "\n"
-                + "Pressure: " + currentWeather.getPressure() + " hPa";
+        String details = currentWeather.getWeather().get(0).getDescription().toUpperCase(Locale.US) + "\n"
+                + "Humidity: " + currentWeather.getMain().getHumidity() + "%" + "\n"
+                + "Pressure: " + currentWeather.getMain().getPressure() + " hPa";
         detailsField.setText(details);
 
-        String currentTemperature = String.format(Locale.getDefault(), "%.2f", currentWeather.getTemp()) + " ℃";
+        String currentTemperature = String.format(Locale.getDefault(), "%.2f", currentWeather.getMain().getTemp()) + " ℃";
         currentTemperatureField.setText(currentTemperature);
 
         DateFormat dateFormat = DateFormat.getDateTimeInstance();
-        String updateOn = "Last update: " + dateFormat.format(new Date(currentWeather.getForecastTime() * 1000));
+        String updateOn = "Last update: " + dateFormat.format(new Date(currentWeather.getDt() * 1000));
         updatedField.setText(updateOn);
 
-        setWeatherIcon(currentWeather.getConditionId(),
-                currentWeather.getSunrise() * 1000,
-                currentWeather.getSunset() * 1000);
+        setWeatherIcon(currentWeather.getWeather().get(0).getId(),
+                Long.parseLong(currentWeather.getSys().getSunrise()) * 1000,
+                Long.parseLong(currentWeather.getSys().getSunset()) * 1000);
     }
 
     private void setWeatherIcon(int actualId, long sunrise, long sunset) {

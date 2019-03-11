@@ -1,4 +1,4 @@
-package com.starikov.getweather;
+package com.starikov.getweather.main;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -10,6 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.starikov.getweather.main.current_weather.CurrentWeatherFragment;
+import com.starikov.getweather.R;
+import com.starikov.getweather.WeatherForecastFragment;
 import com.starikov.getweather.adapters.WeatherPagerAdapter;
 
 import java.util.Arrays;
