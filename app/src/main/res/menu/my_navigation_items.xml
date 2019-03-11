@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_current_weather"
-        android:title="@string/menu_current_weather"
-        android:icon="@drawable/ic_current_weather"/>
-    <item android:id="@+id/action_weather_forecast"
-        android:title="@string/menu_weather_forecast"
-        android:icon="@drawable/ic_weather_forecast"/>
-</menu>

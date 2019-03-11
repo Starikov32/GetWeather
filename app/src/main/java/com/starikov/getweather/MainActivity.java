@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.starikov.getweather.adapters.WeatherPagerAdapter;
 
@@ -27,6 +29,23 @@ public class MainActivity extends AppCompatActivity {
                 Arrays.asList(new CurrentWeatherFragment(), new WeatherForecastFragment()),
                 getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_settings:
+                // TODO: открытие настроек
+                break;
+        }
+        return true;
     }
 
     public boolean isNetworkAvailable() {
