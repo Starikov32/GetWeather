@@ -34,38 +34,38 @@ public class CurrentWeather {
     private double maxTemp;
     private double minTemp;
 
-    public CurrentWeather(JSONObject jsonObject) {
+    public CurrentWeather(JSONObject json) {
         try {
-            JSONObject coordinates = jsonObject.getJSONObject("coord");
+            JSONObject coordinates = json.getJSONObject("coord");
             longitude = (double) coordinates.get("lon");
             latitude = (double) coordinates.get("lat");
 
-            JSONObject weather = jsonObject.getJSONArray("weather").getJSONObject(0);
+            JSONObject weather = json.getJSONArray("weather").getJSONObject(0);
             conditionId = (int) weather.get("id");
             parameters = (String) weather.get("main");
             description = (String) weather.get("description");
 
-            JSONObject main = jsonObject.getJSONObject("main");
+            JSONObject main = json.getJSONObject("main");
             temp = (double) main.get("temp");
             pressure = (int) main.get("pressure");
             humidity = (int) main.get("humidity");
             minTemp = (double) main.get("temp_min");
             maxTemp = (double) main.get("temp_max");
 
-            JSONObject wind = jsonObject.getJSONObject("wind");
+            JSONObject wind = json.getJSONObject("wind");
             windSpeed = (double) wind.get("speed");
             windDirection = (int) wind.get("deg");
 
-            JSONObject clouds = jsonObject.getJSONObject("clouds");
+            JSONObject clouds = json.getJSONObject("clouds");
             cloudiness = (int) clouds.get("all");
 
-            JSONObject sys = jsonObject.getJSONObject("sys");
+            JSONObject sys = json.getJSONObject("sys");
             country = (String) sys.get("country");
             sunrise = (int) sys.get("sunrise");
             sunset = (int) sys.get("sunset");
 
-            forecastTime = (int) jsonObject.get("dt");
-            city = (String) jsonObject.get("name");
+            forecastTime = (int) json.get("dt");
+            city = (String) json.get("name");
         } catch (JSONException exc) {
             Log.e("JSON", "One or more fields not found in the JSON data");
         }
