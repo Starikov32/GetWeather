@@ -28,6 +28,8 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.starikov.getweather.main.current_weather.CurrentWeatherContract.*;
+
 public class CurrentWeatherFragment extends Fragment implements CurrentWeatherContract.View {
 
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 0;
@@ -42,6 +44,8 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
 
     private TextView weatherIcon;
 
+    private Presenter presenter;
+
     private Handler handler;
     private MyLocation myLocation;
     private Activity activity;
@@ -52,6 +56,7 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.weather_fragment, container, false);
+        presenter = new CurrentWeatherPresenterImpl(this);
 
         activity = getActivity();
         handler = new Handler();
