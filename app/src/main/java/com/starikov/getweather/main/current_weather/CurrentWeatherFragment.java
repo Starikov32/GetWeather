@@ -28,7 +28,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class CurrentWeatherFragment extends Fragment {
+public class CurrentWeatherFragment extends Fragment implements CurrentWeatherContract.View {
 
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 0;
 
