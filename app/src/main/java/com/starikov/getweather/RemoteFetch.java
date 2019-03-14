@@ -56,12 +56,11 @@ public class RemoteFetch {
             if(currentWeather.getCod() != 200) {
                 return null;
             }
-
-            return currentWeather;
         } catch (Exception exc) {
             exc.printStackTrace();
-            return null;
         }
+
+        return currentWeather;
     }
 
     public static JSONObject getWeatherForecastJSON(final Context context, double lat, double lon) {

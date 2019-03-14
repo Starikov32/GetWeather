@@ -1,7 +1,6 @@
 package com.starikov.getweather.main.current_weather;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -11,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +28,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.starikov.getweather.main.current_weather.CurrentWeatherContract.*;
+import static com.starikov.getweather.main.current_weather.CurrentWeatherContract.Presenter;
 
 public class CurrentWeatherFragment extends Fragment implements CurrentWeatherContract.View {
 
@@ -48,7 +48,7 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
 
     private Handler handler;
     private MyLocation myLocation;
-    private Activity activity;
+    private AppCompatActivity activity;
 
     private boolean locationPermissionsGranted;
 
@@ -58,7 +58,7 @@ public class CurrentWeatherFragment extends Fragment implements CurrentWeatherCo
         View view = inflater.inflate(R.layout.weather_fragment, container, false);
         presenter = new CurrentWeatherPresenterImpl(this);
 
-        activity = getActivity();
+        activity = (AppCompatActivity) getActivity();
         handler = new Handler();
         myLocation = new MyLocation(activity);
 

@@ -1,7 +1,7 @@
 package com.starikov.getweather;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
+import android.support.v7.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.starikov.getweather.model.CurrentWeather;
@@ -14,8 +14,8 @@ public class WeatherPreferences {
     private SharedPreferences preferences;
     private Gson gson;
 
-    public WeatherPreferences(Activity activity) {
-        preferences = activity.getPreferences(Activity.MODE_PRIVATE);
+    public WeatherPreferences(AppCompatActivity activity) {
+        preferences = activity.getPreferences(AppCompatActivity.MODE_PRIVATE);
         gson = new Gson();
     }
 
